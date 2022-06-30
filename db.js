@@ -11,6 +11,15 @@
     }
  });
 
+ ////
+ User.addHook('beforeDestroy', async(user)=>{
+    await Story.destroy({
+        where:{
+            userId: user.id
+        }
+    })
+});
+
  const Story = db.define('stories', {
     title: {
         type: Sequelize.STRING,

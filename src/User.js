@@ -6,7 +6,8 @@ class User extends Component{
         super();
         this.state = {
             user: {},
-            stories: []
+            stories: [],
+            userId: ''
         }
     }
 
@@ -39,6 +40,7 @@ class User extends Component{
                             return (
                                 <li key={ story.id }>
                                     { story.title }
+                                    <button>Delete Story</button>
                                     <p>
                                         { story.body }
                                     </p>

@@ -43,6 +43,16 @@ app.get('/api/users/:id/stories', async(req, res, next)=> {
     }
 });
 
+app.delete('/api/users/:id', async(req, res, next)=> {
+    try {
+        const deletedUser = await User.findByPk(req.params.id);
+        res.status(204).send(await deletedUser.destroy());
+    }
+    catch(ex){
+        next(ex);
+    }
+})
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, ()=> console.log(`listening on port ${port}`));
