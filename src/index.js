@@ -24,7 +24,7 @@ class App extends Component{
 
     async createNewUser(){
         const user = await axios.post('/api/users');
-        const users = [...this.state.users, user ];
+        const users = [...this.state.users, user.data ];
         this.setState({ users: users });
     }
 
@@ -33,8 +33,6 @@ class App extends Component{
             const userId = window.location.hash.slice(1);
             this.setState({ userId })
             let response = await axios.get('/api/users');
-            this.setState({ users : response.data })
-            // response = await this.createNewUser();
             this.setState({ users : response.data })
 
             window.addEventListener('hashchange', ()=>{
@@ -46,6 +44,15 @@ class App extends Component{
             console.log(ex);
         }
     }
+
+    //TODO
+    // async componentDidUpdate(prevProps){
+    //     if(prevProps.whatGoesHere !== this.props.whatGoesHere){
+    //         let response = await axios.get('/api/users');
+    //         this.setState({ users : response.data })
+    //     }
+    // }
+
     render(){
         const { users, userId } = this.state;
         const { destroy } = this;
