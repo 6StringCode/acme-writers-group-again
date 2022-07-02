@@ -1,14 +1,17 @@
 import axios from "axios";
 import React, { Component } from "react";
+import { faker } from '@faker-js/faker';
 
 class User extends Component{
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
             user: {},
             stories: [],
-            userId: ''
+            userId: this.props.userId,
         }
+        this.createNewStory = this.createNewStory.bind(this);
+        this.destroyStory = this.destroyStory.bind(this);
     }
 
     async componentDidMount(){
@@ -26,21 +29,42 @@ class User extends Component{
         }
     }
 
-    render(){
+    async createNewStory(){        
+        const story = await axios.post(`/api/users/${this.state.userId}/stories/`, {
+            title: faker.random.words(5),
+            body: faker.lorem.paragraphs(5),
+            favorite: faker.datatype.boolean(),
+            userId: this.state.userId
+        });
+        const _story = story.data;
+        const stories = [_story, ...this.state.stories];
+        this.setState({ stories: stories });
+    }
+
+    async destroyStory(story){
+        await axios.delete(`/api/stories/${story}`);
+        const stories = this.state.stories.filter(_story => _story.id !== story.id);
+        this.setState({ stories });
+        console.log(stories);
+    }
+
+    render(){ 
         const  { user, stories } = this.state;
+        const { createNewStory, destroyStory } = this;
         return (
             <div>
                 Details for { user.name }
                 <p>
                     { user.bio }
                 </p>
+                <button onClick={()=> createNewStory()}>Add Story</button>
                 <ul>
                     {
                         stories.map(story => {
                             return (
                                 <li key={ story.id }>
                                     { story.title }
-                                    <button>Delete Story</button>
+                                    <button onClick={()=> destroyStory(story.id)}>Delete Story</button>
                                     <p>
                                         { story.body }
                                     </p>

@@ -4,6 +4,8 @@ const app = express();
 const path = require('path');
 const { createRandomUser, createRandomStory } = require('./seed-data');
 
+app.use(express.json());
+
 app.use('/dist', express.static('dist'));
 
 app.get('/', (req, res)=> res.sendFile(path.join(__dirname, 'index.html')));
@@ -44,19 +46,19 @@ app.get('/api/users/:id/stories', async(req, res, next)=> {
     }
 });
 
-//toDo
-// app.post('/api/users/:id/stories', async(req, res, next)=> {
-//     try {
-//         res.status(201).send(await User.createRandomStory());//don't need req.body because not form
-//     }
-//     catch(ex){
-//         next(ex);
-//     }
-// });
-
 app.post('/api/users', async(req, res, next)=> {
     try {
         res.status(201).send(await User.create(createRandomUser()));//don't need req.body because not form
+    }
+    catch(ex){
+        next(ex);
+    }
+});
+
+app.post('/api/users/:id/stories', async(req, res, next)=> {
+    try {
+        // res.status(201).send(await Story.create(createRandomStory()));
+        res.status(201).send(await Story.create(req.body));
     }
     catch(ex){
         next(ex);
@@ -71,7 +73,17 @@ app.delete('/api/users/:id', async(req, res, next)=> {
     catch(ex){
         next(ex);
     }
-})
+});
+
+app.delete('/api/stories/:id', async(req, res, next)=> {
+    try {
+        const deletedStory = await Story.findByPk(req.params.id);
+        res.status(204).send(await deletedStory.destroy());
+    }
+    catch(ex){
+        next(ex);
+    }
+});
 
 const port = process.env.PORT || 3000;
 

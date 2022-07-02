@@ -1,18 +1,21 @@
 import axios from "axios";
 import React, { Component } from "react";
 import { render } from 'react-dom';
-import Users from './Users'
-import User from './User'
+import Users from './Users';
+import User from './User';
+import { faker } from '@faker-js/faker';
 
 class App extends Component{
     constructor(){
         super()
         this.state = {
             users: [],
-            userId: ''
+            userId: '',
+            stories: []
         };
-        this.destroy = this.destroy.bind(this);
         this.createNewUser = this.createNewUser.bind(this);
+        
+        this.destroy = this.destroy.bind(this);
     }
 
     async destroy(user){
@@ -21,19 +24,22 @@ class App extends Component{
         this.setState({ users });
         window.location.hash = '#';
     }
+    
 
     async createNewUser(){
         const user = await axios.post('/api/users');
         const users = [...this.state.users, user.data ];
         this.setState({ users: users });
     }
+    
+
 
     async componentDidMount(){
         try {
             const userId = window.location.hash.slice(1);
             this.setState({ userId })
             let response = await axios.get('/api/users');
-            this.setState({ users : response.data })
+            this.setState({ users : response.data });
 
             window.addEventListener('hashchange', ()=>{
                 const userId = window.location.hash.slice(1);
@@ -45,14 +51,6 @@ class App extends Component{
         }
     }
 
-    //TODO
-    // async componentDidUpdate(prevProps){
-    //     if(prevProps.whatGoesHere !== this.props.whatGoesHere){
-    //         let response = await axios.get('/api/users');
-    //         this.setState({ users : response.data })
-    //     }
-    // }
-
     render(){
         const { users, userId } = this.state;
         const { destroy } = this;
@@ -62,7 +60,7 @@ class App extends Component{
             <main>
             <Users users = { users } createNewUser = { this.createNewUser } destroy = { destroy } userId = { userId }/>
             {
-                userId ? <User userId={ userId } /> : null
+                userId ? <User userId={ userId } createNewStory = { this.createNewStory } /> : null
             }
             </main>
             </div>
