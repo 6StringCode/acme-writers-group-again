@@ -2,6 +2,7 @@ const express = require('express');
 const { User, Story } = require('./db');
 const app = express();
 const path = require('path');
+const { createRandomUser, createRandomStory } = require('./seed-data');
 
 app.use('/dist', express.static('dist'));
 
@@ -37,6 +38,25 @@ app.get('/api/users/:id/stories', async(req, res, next)=> {
             }
         })
         res.send(stories)
+    }
+    catch(ex){
+        next(ex);
+    }
+});
+
+//toDo
+// app.post('/api/users/:id/stories', async(req, res, next)=> {
+//     try {
+//         res.status(201).send(await User.createRandomStory());//don't need req.body because not form
+//     }
+//     catch(ex){
+//         next(ex);
+//     }
+// });
+
+app.post('/api/users', async(req, res, next)=> {
+    try {
+        res.status(201).send(await User.create(createRandomUser()));//don't need req.body because not form
     }
     catch(ex){
         next(ex);

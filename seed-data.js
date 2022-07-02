@@ -23,4 +23,4 @@ Array.from({length: 100}).forEach(()=>USERS.push(createRandomUser()));
 Array.from({length: 500}).forEach(()=>STORIES.push(createRandomStory()));
 
 
-module.exports = { USERS, STORIES }
+module.exports = { USERS, STORIES, createRandomUser, createRandomStory }

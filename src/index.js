@@ -12,6 +12,7 @@ class App extends Component{
             userId: ''
         };
         this.destroy = this.destroy.bind(this);
+        this.createNewUser = this.createNewUser.bind(this);
     }
 
     async destroy(user){
@@ -21,11 +22,19 @@ class App extends Component{
         window.location.hash = '#';
     }
 
+    async createNewUser(){
+        const user = await axios.post('/api/users');
+        const users = [...this.state.users, user ];
+        this.setState({ users: users });
+    }
+
     async componentDidMount(){
         try {
             const userId = window.location.hash.slice(1);
             this.setState({ userId })
-            const response = await axios.get('/api/users');
+            let response = await axios.get('/api/users');
+            this.setState({ users : response.data })
+            // response = await this.createNewUser();
             this.setState({ users : response.data })
 
             window.addEventListener('hashchange', ()=>{
@@ -44,7 +53,7 @@ class App extends Component{
             <div>
                 <h1>Acme Writers Group ({ users.length })</h1>
             <main>
-            <Users users = { users } destroy = { destroy } userId = { userId }/>
+            <Users users = { users } createNewUser = { this.createNewUser } destroy = { destroy } userId = { userId }/>
             {
                 userId ? <User userId={ userId } /> : null
             }
