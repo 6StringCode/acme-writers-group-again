@@ -42,10 +42,11 @@ class User extends Component{
     }
 
     async destroyStory(story){
-        await axios.delete(`/api/stories/${story}`);
-        const stories = this.state.stories.filter(_story => _story.id !== story.id);
+        const stori = await axios.delete(`/api/stories/${story}`);
+        console.log(story);
+        console.log(typeof stori.data);
+        const stories = this.state.stories.filter(_story => _story.id !== story * 1);
         this.setState({ stories });
-        console.log(stories);
     }
 
     render(){ 
